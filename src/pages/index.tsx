@@ -1,11 +1,26 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
+import React from "react";
+import useAuthStore from "@/store/useAuthStore";
+import { useRouter } from "next/router";
+import { checkAuth } from "@/lib/checkAuth";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const isAuthenticated = useAuthStore.useIsAuthenticated();
+  const logout = useAuthStore.useLogout();
+
+  const router = useRouter();
+
+  React.useEffect(() => {
+    checkAuth();
+  }, []);
+
+  if (!isAuthenticated) {
+    if (router.isReady) router.push("/login");
+  }
+
   return (
     <>
       <Head>
@@ -15,7 +30,8 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main>
-        <h1 className='text-center bg-red-400'>Hallo</h1>
+        <h1 className='text-center'>Dashboard</h1>
+        <button onClick={logout}>logout</button>
       </main>
     </>
   );
