@@ -8,14 +8,15 @@ import Input from "@/components/forms/Input";
 import Button from "@/components/Button";
 
 import { useMutation } from "react-query";
-import { api } from "@/lib/api";
+import { api, apiWithToken } from "@/lib/api";
 import Link from "next/link";
 import { Toaster, toast } from "react-hot-toast";
 import Head from "next/head";
-import { checkAuth } from "@/lib/checkAuth";
+import Loading from "@/components/Loading";
 
 function Register() {
   const isAuthenticated = useAuthStore.useIsAuthenticated();
+  const login = useAuthStore.useLogin();
 
   const methods = useForm();
   const router = useRouter();
@@ -43,11 +44,33 @@ function Register() {
   );
 
   React.useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        apiWithToken(token)
+          .get("/secured/me")
+          .then((response) => {
+            login({
+              name: response.data.data.name,
+              email: response.data.data.email,
+              data: token,
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    };
     checkAuth();
   }, []);
 
+  if (!router.isReady) {
+    return <Loading />;
+  }
+
   if (isAuthenticated) {
-    router.replace("/");
+    if (router.isReady) router.push("/");
   }
 
   const onSubmit = (data: any) => {
