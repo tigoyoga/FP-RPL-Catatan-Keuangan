@@ -38,7 +38,8 @@ function Login() {
         login({
           name: user.data.data.name,
           email: user.data.data.email,
-          data: token,
+          token: token,
+          data: response.data.data.list_dompet,
         });
       }
     },
@@ -63,7 +64,8 @@ function Login() {
             login({
               name: response.data.data.name,
               email: response.data.data.email,
-              data: token,
+              token: token,
+              data: response.data.data.list_dompet,
             });
           })
           .catch((error) => {
@@ -74,7 +76,7 @@ function Login() {
     checkAuth();
   }, []);
 
-  if (!router.isReady) {
+  if (!router.isReady || isLoading) {
     return <Loading />;
   }
 

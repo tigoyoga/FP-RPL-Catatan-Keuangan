@@ -51,10 +51,12 @@ function Register() {
         apiWithToken(token)
           .get("/secured/me")
           .then((response) => {
+            console.log(response.data.data);
             login({
               name: response.data.data.name,
               email: response.data.data.email,
-              data: token,
+              token: token,
+              data: response.data.data.list_dompet,
             });
           })
           .catch((error) => {
@@ -65,7 +67,7 @@ function Register() {
     checkAuth();
   }, []);
 
-  if (!router.isReady) {
+  if (!router.isReady || isLoading) {
     return <Loading />;
   }
 

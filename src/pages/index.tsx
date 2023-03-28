@@ -5,25 +5,17 @@ import useAuthStore from "@/store/useAuthStore";
 import { useRouter } from "next/router";
 import Modal from "@/components/Modal";
 
-import { Dialog, Transition } from "@headlessui/react";
 import { apiWithToken } from "@/lib/api";
 import Loading from "@/components/Loading";
-import PasswordInput from "@/components/forms/PasswordInput";
-import { FormProvider, useForm } from "react-hook-form";
+
 import Input from "@/components/forms/Input";
-import Button from "@/components/Button";
 
-type dataProps = {
-  id: number;
-  name: string;
-  email: string;
-};
-
-const datas: dataProps[] = [];
 export default function Home() {
   const isAuthenticated = useAuthStore.useIsAuthenticated();
   const login = useAuthStore.useLogin();
   const logout = useAuthStore.useLogout();
+
+  const user = useAuthStore.useUser();
   let [isOpen, setIsOpen] = React.useState(false);
 
   function closeModal() {
@@ -47,7 +39,8 @@ export default function Home() {
             login({
               name: response.data.data.name,
               email: response.data.data.email,
-              data: token,
+              token: token,
+              data: response.data.data.list_dompet,
             });
           })
           .catch((error) => {
@@ -58,22 +51,33 @@ export default function Home() {
     checkAuth();
   }, []);
 
-  // if (!router.isReady) {
-  //   return <Loading />;
-  // }
+  if (!router.isReady) {
+    return <Loading />;
+  }
 
   if (!isAuthenticated) {
     if (router.isReady) router.push("/login");
   }
 
-  // array for store dummy data
-
   const onSubmit = (data: any) => {
-    // insert data to array
-    datas.push(data);
-    // close modal
-    closeModal();
-    console.log(datas);
+    const token = localStorage.getItem("token");
+
+    data.saldo = Number(data.saldo);
+    if (token) {
+      apiWithToken(token)
+        .post("/secured/dompet", data)
+        .then((response) => {
+          console.log(response);
+          closeModal();
+
+          router.reload();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.log("token not found");
+    }
   };
 
   return (
@@ -92,7 +96,7 @@ export default function Home() {
             onClick={openModal}
             className='rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
           >
-            Open dialog
+            Tambah Dompet
           </button>
 
           {/* add modal component with children */}
@@ -103,40 +107,57 @@ export default function Home() {
             title='Buat Dompet'
           >
             <Input
-              id='name'
-              label='Name'
+              id='nama_dompet'
+              label='Nama Dompet'
               placeholder='Masukkan nama'
               validation={{
                 required: "Nama tidak boleh kosong",
               }}
             />
+
             <Input
-              id='email'
-              label='Email'
-              placeholder='Masukkan email'
+              id='saldo'
+              label='Saldo'
+              placeholder='Masukkan saldo'
+              type='number'
               validation={{
-                required: "Email tidak boleh kosong",
+                required: "Saldo tidak boleh kosong",
                 pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Email tidak valid",
+                  value: /^[0-9]*$/,
+                  message: "Saldo harus berupa angka",
                 },
               }}
             />
           </Modal>
+          <div className='w-11/12 grid justify-center items-center grid-cols-5 mx-auto gap-2'>
+            {/* map the list dompet */}
+            {user &&
+              user?.data?.map((item: any) => (
+                <div
+                  key={item.id}
+                  className='w-auto h-40 p-4 bg-white rounded-xl border-2 border-gray-500 flex flex-col justify-center items-center'
+                >
+                  <h1 className='text-2xl font-bold'>{item.nama_dompet}</h1>
+                  <h1 className='text-2xl font-bold'>
+                    {/* format balance to rupiah */}
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(item.saldo)}
+                  </h1>
+
+                  <button
+                    type='button'
+                    onClick={() => router.push(`/dompet/${item.id}`)}
+                    className='mt-4 rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
+                  >
+                    Lihat
+                  </button>
+                </div>
+              ))}
+          </div>
 
           <button onClick={logout}>logout</button>
-          <div className='w-full mx-24 flex gap-2 flex-wrap'>
-            {/* map the data and show with div */}
-            {/* {datas.map((data, index) => (
-              <div
-                key={index}
-                className='w-64 h-32 rounded-lg border border-gray-700'
-              >
-                <p>{data.name}</p>
-                <p>{data.email}</p>
-              </div>
-            ))} */}
-          </div>
         </div>
       </main>
     </>

@@ -7,7 +7,8 @@ import { create } from "zustand";
 export type User = {
   name: string;
   email: string;
-  data: string;
+  data: [];
+  token: string;
 };
 
 type AuthStoreType = {
@@ -24,7 +25,7 @@ const useAuthStoreBase = create<AuthStoreType>((set) => ({
   isAuthenticated: false,
   isLoading: true,
   login: (user) => {
-    localStorage.setItem("token", user.data);
+    localStorage.setItem("token", user.token);
     set(
       produce<AuthStoreType>((state) => {
         state.isAuthenticated = true;
