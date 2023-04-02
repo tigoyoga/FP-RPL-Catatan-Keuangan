@@ -98,25 +98,50 @@ function Login() {
       <Head>
         <title>Login</title>
 
-        <meta name='description' content='Register page' />
+        <meta name="description" content="Register page" />
 
-        <link rel='icon' href='/favicon.ico' />
+        <link rel="icon" href="/favicon.ico" />
 
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main>
+      <main
+        className="bg-cover h-screen w-screen overflow-hidden"
+        style={{ backgroundImage: "url('/images/Register Page.png')" }}
+      >
         <Toaster />
-        <div className='grid grid-cols-12 h-screen'>
-          <div className='col-span-7'></div>
-          <div className='col-span-5 flex justify-center items-center'>
-            <div className='w-96 bg-white rounded-lg p-6'>
-              <h1 className='text-2xl font-medium text-center'>Login</h1>
+        <div className="grid grid-cols-12 h-screen">
+          <div className="col-span-5 md:col-span-7">
+            <div className="flex flex-col justify-start h-full mt-4">
+              <div className="flex flex-row justify-start items-start">
+                <h1 className="text-2xl md:text-5xl font-medium font-serif text-[#5FB6F4] mt-20 ml-12 md:ml-20">
+                  Money Tracker
+                </h1>
+                <Link
+                  href="/index"
+                  className="text-[#FFFFFF80] text-xl md:text-4xl font-bold mt-20 ml-12 md:ml-20"
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/register"
+                  className="text-[#FFFFFF80] text-xl md:text-4xl font-bold mt-20 ml-12 md:ml-20"
+                >
+                  Register
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-12 md:col-span-5 flex justify-center items-center">
+            <div className="w-full bg-[#23242E] rounded-3xl p-6 py-20 m-10">
+              <h1 className="text-5xl font-bold text-center text-white mb-11">
+                Login
+              </h1>
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <Input
-                    id='email'
-                    label='Email'
-                    placeholder='Masukkan email'
+                    id="email"
+                    label="Email"
+                    placeholder="Masukkan email"
                     validation={{
                       required: "Email tidak boleh kosong",
                       pattern: {
@@ -126,9 +151,9 @@ function Login() {
                     }}
                   />
                   <PasswordInput
-                    id='password'
-                    label='Password'
-                    placeholder='Masukkan password'
+                    id="password"
+                    label="Password"
+                    placeholder="Masukkan password"
                     validation={{
                       required: "Password tidak boleh kosong",
                       minLength: {
@@ -138,11 +163,12 @@ function Login() {
                     }}
                   />
 
-                  <div className='w-fit mx-auto mt-4'>
+                  <div className="w-fit mx-auto mt-4 ">
                     <Button
-                      type='submit'
-                      variant='primary'
+                      type="submit"
+                      variant="primary"
                       isLoading={isLoading}
+                      className="text-white border-white"
                     >
                       Login
                     </Button>
@@ -150,9 +176,9 @@ function Login() {
                 </form>
               </FormProvider>
               <div>
-                <p className='text-center mt-4'>
+                <p className="text-white text-center mt-4">
                   Belum punya akun?{" "}
-                  <Link href='/register' className='text-blue-500'>
+                  <Link href="/register" className="text-blue-500">
                     Register
                   </Link>
                 </p>
