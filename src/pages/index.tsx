@@ -4,8 +4,10 @@ import React from "react";
 import useAuthStore from "@/store/useAuthStore";
 import { useRouter } from "next/router";
 import Modal from "@/components/Modal";
+import toast from "react-hot-toast";
 
-import { apiWithToken } from "@/lib/api";
+import { api, apiWithToken } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
 
 import Input from "@/components/forms/Input";
@@ -14,8 +16,11 @@ export default function Home() {
   const isAuthenticated = useAuthStore.useIsAuthenticated();
   const login = useAuthStore.useLogin();
   const logout = useAuthStore.useLogout();
+  const isLoading = useAuthStore.useIsLoading();
+  const stopLoading = useAuthStore.useStopLoading();
 
   const user = useAuthStore.useUser();
+
   let [isOpen, setIsOpen] = React.useState(false);
 
   function closeModal() {
@@ -28,57 +33,86 @@ export default function Home() {
 
   const router = useRouter();
 
-  React.useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("token");
+  const checkAuth = React.useCallback(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      isAuthenticated && logout();
+      stopLoading();
+      return;
+    }
+    const loadUser = async () => {
+      try {
+        const res = await apiWithToken().get("/secured/me");
 
-      if (token) {
-        apiWithToken(token)
-          .get("/secured/me")
-          .then((response) => {
-            login({
-              name: response.data.data.name,
-              email: response.data.data.email,
-              token: token,
-              data: response.data.data.list_dompet,
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        login({
+          id: res.data.data.id,
+          name: res.data.data.name,
+          email: res.data.data.email,
+          token: token,
+          data: res.data.data.list_dompet,
+        });
+      } catch (err) {
+        localStorage.removeItem("token");
+      } finally {
+        stopLoading();
       }
     };
-    checkAuth();
-  }, []);
 
-  if (!router.isReady) {
-    return <Loading />;
-  }
+    if (!isAuthenticated) {
+      loadUser();
+    }
+  }, [isAuthenticated, login, logout, stopLoading]);
+
+  React.useEffect(() => {
+    checkAuth();
+
+    window.addEventListener("focus", checkAuth);
+    return () => {
+      window.removeEventListener("focus", checkAuth);
+    };
+  }, [checkAuth]);
+
+  const deleteDompet = (id: string) => {
+    apiWithToken()
+      .delete(`/secured/dompet/${id}`)
+      .then((response) => {
+        console.log(response);
+        router.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   if (!isAuthenticated) {
     if (router.isReady) router.push("/login");
   }
 
   const onSubmit = (data: any) => {
-    const token = localStorage.getItem("token");
-
     data.saldo = Number(data.saldo);
-    if (token) {
-      apiWithToken(token)
+
+    toast.promise(
+      apiWithToken()
         .post("/secured/dompet", data)
         .then((response) => {
-          console.log(response);
           closeModal();
 
           router.reload();
         })
         .catch((error) => {
           console.log(error);
-        });
-    } else {
-      console.log("token not found");
-    }
+        }),
+      {
+        loading: "Loading",
+        success: "Success",
+        error: "Error",
+      }
+    );
   };
+
+  if (isLoading || !router.isReady) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -88,21 +122,41 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main>
-        <div className='flex flex-col items-center justify-center gap-12 h-screen'>
-          <h1 className='text-center'>Dashboard</h1>
-          <button
-            type='button'
-            onClick={openModal}
-            className='rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
-          >
-            Tambah Dompet
-          </button>
 
+      <main className='flex overflow-hidden'>
+        {/* create sidebar with aside */}
+        <aside className='w-1/5 h-screen bg-gray-800'>
+          <div className='flex flex-col items-center justify-center h-32'>
+            <h1 className='text-white text-2xl font-bold'>Catatan Keuangan</h1>
+            <p className='text-xl text-white'>{user?.name}</p>
+          </div>
+          <div className='flex flex-col items-center justify-center gap-4 h-full'>
+            <button
+              type='button'
+              onClick={openModal}
+              className='rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
+            >
+              Tambah Dompet
+            </button>
+            <button
+              type='button'
+              onClick={() => {
+                logout();
+                router.push("/login");
+              }}
+              className='rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
+            >
+              Logout
+            </button>
+          </div>
+        </aside>
+
+        <section className='w-4/5 flex flex-col gap-12 h-screen overflow-auto pb-8'>
           {/* add modal component with children */}
           <Modal
             onSubmit={onSubmit}
             isOpen={isOpen}
+            type='dompet'
             closeModal={closeModal}
             title='Buat Dompet'
           >
@@ -129,36 +183,82 @@ export default function Home() {
               }}
             />
           </Modal>
-          <div className='w-11/12 grid justify-center items-center grid-cols-5 mx-auto gap-2'>
-            {/* map the list dompet */}
-            {user &&
-              user?.data?.map((item: any) => (
-                <div
-                  key={item.id}
-                  className='w-auto h-40 p-4 bg-white rounded-xl border-2 border-gray-500 flex flex-col justify-center items-center'
-                >
-                  <h1 className='text-2xl font-bold'>{item.nama_dompet}</h1>
-                  <h1 className='text-2xl font-bold'>
-                    {/* format balance to rupiah */}
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(item.saldo)}
-                  </h1>
+          <div className='w-11/12 mx-auto p-4 rounded-xl space-y-2 min-h-[18rem] bg-neutral-100'>
+            <h1 className='text-xl font-semibold'>Dompet Pribadi</h1>
+            <div className='grid justify-center items-center grid-cols-5 gap-2'>
+              {/* map the list dompet */}
+              {user &&
+                user?.data?.map(
+                  (item: any) =>
+                    // filter if the user id is equal to the dompet user id
+                    item.user_id === user?.id && (
+                      <div
+                        onClick={() => router.push(`/dompet/${item.id}`)}
+                        key={item.id}
+                        className='w-auto h-40 p-4 bg-white rounded-xl border-2 border-gray-500 flex hover:cursor-pointer flex-col justify-center items-center'
+                      >
+                        <h1 className='text-2xl font-bold'>
+                          {item.nama_dompet}
+                        </h1>
+                        <h1 className='text-2xl font-bold'>
+                          {/* format balance to rupiah */}
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(item.saldo)}
+                        </h1>
 
-                  <button
-                    type='button'
-                    onClick={() => router.push(`/dompet/${item.id}`)}
-                    className='mt-4 rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
-                  >
-                    Lihat
-                  </button>
-                </div>
-              ))}
+                        {/* delet dompet */}
+                        <button
+                          type='button'
+                          onClick={() => deleteDompet(item.id)}
+                          className='mt-4 rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
+                        >
+                          Hapus
+                        </button>
+                      </div>
+                    )
+                )}
+            </div>
           </div>
+          <div className='w-11/12 mx-auto p-4 rounded-xl space-y-2 min-h-[18rem] bg-neutral-100'>
+            <h1 className='text-xl font-semibold'>Dompet Kolaborasi</h1>
+            <div className='grid justify-center items-center grid-cols-5 gap-2'>
+              {/* map the list dompet */}
+              {user &&
+                user?.data?.map(
+                  (item: any) =>
+                    item.user_id !== user?.id && (
+                      <div
+                        onClick={() => router.push(`/dompet/${item.id}`)}
+                        key={item.id}
+                        className='w-auto h-40 p-4 bg-white rounded-xl border-2 border-gray-500 flex hover:cursor-pointer flex-col justify-center items-center'
+                      >
+                        <h1 className='text-2xl font-bold'>
+                          {item.nama_dompet}
+                        </h1>
+                        <h1 className='text-2xl font-bold'>
+                          {/* format balance to rupiah */}
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(item.saldo)}
+                        </h1>
 
-          <button onClick={logout}>logout</button>
-        </div>
+                        {/* delet dompet */}
+                        <button
+                          type='button'
+                          onClick={() => deleteDompet(item.id)}
+                          className='mt-4 rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
+                        >
+                          Hapus
+                        </button>
+                      </div>
+                    )
+                )}
+            </div>
+          </div>
+        </section>
       </main>
     </>
   );

@@ -5,6 +5,7 @@ import { create } from "zustand";
 // create a custom hook to access the store
 
 export type User = {
+  id: number;
   name: string;
   email: string;
   data: [];

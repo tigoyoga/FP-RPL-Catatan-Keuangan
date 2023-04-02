@@ -10,9 +10,10 @@ export const api = axios.create({
   withCredentials: false,
 });
 
-// create config to get data from api with bearer token
+// config to handle bearer token
+export const apiWithToken = () => {
+  const token = localStorage.getItem("token");
 
-export const apiWithToken = (token: string) => {
   return axios.create({
     baseURL: "https://dompet-api-production.up.railway.app",
     headers: {

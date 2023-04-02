@@ -24,6 +24,7 @@ export default function Input({
   } = useFormContext();
 
   const error = errors[id];
+
   return (
     <div className='mt-2 flex flex-col justify-start relative'>
       <label className='text-left font-medium' htmlFor={id}>

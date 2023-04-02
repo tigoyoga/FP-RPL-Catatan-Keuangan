@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import Input from "@/components/forms/Input";
 import Button from "@/components/Button";
 
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { api, apiWithToken } from "@/lib/api";
 import Link from "next/link";
 import { Toaster, toast } from "react-hot-toast";
@@ -15,13 +15,53 @@ import Head from "next/head";
 import Loading from "@/components/Loading";
 
 function Register() {
-  const isAuthenticated = useAuthStore.useIsAuthenticated();
-  const login = useAuthStore.useLogin();
-
   const methods = useForm();
   const router = useRouter();
 
+  const isAuthenticated = useAuthStore.useIsAuthenticated();
+  const login = useAuthStore.useLogin();
+  const logout = useAuthStore.useLogout();
+  const stopLoading = useAuthStore.useStopLoading();
+
   const { handleSubmit } = methods;
+
+  const checkAuth = React.useCallback(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      isAuthenticated && logout();
+      stopLoading();
+      return;
+    }
+    const loadUser = async () => {
+      try {
+        const res = await apiWithToken().get("/secured/me");
+
+        login({
+          id: res.data.data.id,
+          name: res.data.data.name,
+          email: res.data.data.email,
+          token: token,
+          data: res.data.data.list_dompet,
+        });
+      } catch (err) {
+        localStorage.removeItem("token");
+      } finally {
+        stopLoading();
+      }
+    };
+    if (!isAuthenticated) {
+      loadUser();
+    }
+  }, [isAuthenticated, login, logout, stopLoading]);
+
+  React.useEffect(() => {
+    checkAuth();
+
+    window.addEventListener("focus", checkAuth);
+    return () => {
+      window.removeEventListener("focus", checkAuth);
+    };
+  }, [checkAuth]);
 
   const { mutate, isLoading } = useMutation(
     async (data: any) => {
@@ -42,34 +82,6 @@ function Register() {
       },
     }
   );
-
-  React.useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        apiWithToken(token)
-          .get("/secured/me")
-          .then((response) => {
-            console.log(response.data.data);
-            login({
-              name: response.data.data.name,
-              email: response.data.data.email,
-              token: token,
-              data: response.data.data.list_dompet,
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    };
-    checkAuth();
-  }, []);
-
-  if (!router.isReady || isLoading) {
-    return <Loading />;
-  }
 
   if (isAuthenticated) {
     if (router.isReady) router.push("/");
