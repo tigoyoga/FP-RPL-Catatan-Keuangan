@@ -5,8 +5,8 @@ import { MdClose } from "react-icons/md";
 type ModalProps = {
   isOpen: boolean;
   title: string;
-
-  closeModal: () => void;
+  type: string;
+  closeModal: (type: string) => void;
   onSubmit: (data: any) => void;
   children: React.ReactNode;
 };
@@ -16,6 +16,7 @@ const Modal = ({
   isOpen,
   closeModal,
   title,
+  type,
   onSubmit,
 }: ModalProps) => {
   const methods = useForm();
@@ -67,7 +68,7 @@ const Modal = ({
                   <button
                     type='button'
                     className='absolute top-0 right-0 mt-6 mr-6'
-                    onClick={closeModal}
+                    onClick={() => closeModal(type)}
                   >
                     <span className='sr-only'>Close</span>
                     <MdClose className='h-6 w-6 text-gray-400 hover:text-gray-500' />

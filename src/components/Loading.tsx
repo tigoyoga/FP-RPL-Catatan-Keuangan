@@ -1,14 +1,18 @@
+import Head from "next/head";
 import React from "react";
+import { FaSpinner } from "react-icons/fa";
 
-const Loading = () => {
+function Loading() {
   return (
     <main>
-      <div className='w-screen h-screen flex items-center justify-center'>
-        <div className='w-10 h-10 border-4 border-t-4 border-gray-900 rounded-full animate-spin'></div>
-        <h1>Loading...</h1>
+      <div className='w-screen h-screen flex flex-col gap-2 items-center justify-center'>
+        <div>
+          <FaSpinner className='animate-spin text-5xl' />
+        </div>
+        <p>Loading...</p>
       </div>
     </main>
   );
-};
+}
 
 export default Loading;
