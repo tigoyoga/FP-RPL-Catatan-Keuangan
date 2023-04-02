@@ -28,11 +28,11 @@ export default function Input({
   const togglePassword = () => setShowPassword((prev) => !prev);
   const error = errors[id];
   return (
-    <div className='mt-2 flex flex-col justify-start relative'>
-      <label className='text-left font-medium' htmlFor={id}>
+    <div className="mt-2 flex flex-col justify-start relative w-full px-5 bg-[#1A1B22] rounded-2xl min-h-[79px] mb-16">
+      <label className="text-left font-medium text-white" htmlFor={id}>
         {label}
       </label>
-      <div className='relative'>
+      <div className="relative">
         <input
           {...rest}
           className={`
@@ -49,22 +49,22 @@ export default function Input({
         />
         <button
           onClick={togglePassword}
-          type='button'
-          className='absolute inset-y-0 right-0 mr-3 flex items-center rounded-lg p-1 focus:outline-none focus:ring focus:ring-primary/50'
+          type="button"
+          className="absolute inset-y-0 right-0 mr-3 flex items-center rounded-lg p-1 focus:outline-none focus:ring focus:ring-primary/50"
         >
           {showPassword ? (
-            <RxEyeOpen className='cursor-pointer text-xl text-gray-500 hover:text-gray-600' />
+            <RxEyeOpen className="cursor-pointer text-xl text-gray-500 hover:text-gray-600" />
           ) : (
-            <RxEyeClosed className='cursor-pointer text-xl text-gray-500 hover:text-gray-600' />
+            <RxEyeClosed className="cursor-pointer text-xl text-gray-500 hover:text-gray-600" />
           )}
         </button>
       </div>
-      <div className='mt-1'>
+      <div className="mt-1">
         {helperText && (
-          <p className='text-left text-xs text-neutral-500'>{helperText}</p>
+          <p className="text-left text-xs text-neutral-500">{helperText}</p>
         )}
         {error && (
-          <p className='text-left font-normal leading-none text-[#F32013]'>
+          <p className="text-left font-normal leading-none text-[#F32013]">
             {error.message as unknown as string}
           </p>
         )}

@@ -91,58 +91,87 @@ function Login() {
       <Head>
         <title>Login</title>
 
-        <meta name='description' content='Register page' />
+        <meta name="description" content="Register page" />
 
-        <link rel='icon' href='/favicon.ico' />
+        <link rel="icon" href="/favicon.ico" />
 
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main>
+      <main
+        className="bg-cover h-screen w-screen"
+        style={{ backgroundImage: "url('/images/wallet 1.png')" }}
+      >
         <Toaster />
-        <div className='flex items-center justify-center h-screen'>
-          <div className='w-96 bg-white rounded-lg p-6'>
-            <h1 className='text-2xl font-medium text-center'>Login</h1>
-            <FormProvider {...methods}>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <Input
-                  id='email'
-                  label='Email'
-                  placeholder='Masukkan email'
-                  validation={{
-                    required: "Email tidak boleh kosong",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Email tidak valid",
-                    },
-                  }}
-                />
-                <PasswordInput
-                  id='password'
-                  label='Password'
-                  placeholder='Masukkan password'
-                  validation={{
-                    required: "Password tidak boleh kosong",
-                    minLength: {
-                      value: 6,
-                      message: "Password minimal 6 karakter",
-                    },
-                  }}
-                />
+        <div className="grid grid-cols-1 sm:grid-cols-2 items-center h-screen">
+          <div className="flex flex-row justify-start h-full">
+            <h1 className="text-[43px] font-medium font-serif text-[#5FB6F4] mt-[68px] ml-20">
+              Money Tracker
+            </h1>
+            <Link
+              href="/index"
+              className="text-[#FFFFFF80] text-4xl font-bold mt-20 ml-20"
+            >
+              Home
+            </Link>
+            <Link
+              href="/register"
+              className="text-[#FFFFFF80] text-4xl font-bold mt-20 ml-20"
+            >
+              Register
+            </Link>
+          </div>
+          <div className="flex justify-start items-center md:justify-end h-full md:max-h-screen">
+            <div className="w-[549px] bg-[#23242E] md:rounded-3xl p-6 py-28 m-10">
+              <h1 className="text-5xl font-bold text-center text-white mb-11">
+                Login
+              </h1>
+              <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <Input
+                    id="email"
+                    label="Email"
+                    placeholder="Masukkan email"
+                    validation={{
+                      required: "Email tidak boleh kosong",
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Email tidak valid",
+                      },
+                    }}
+                  />
+                  <PasswordInput
+                    id="password"
+                    label="Password"
+                    placeholder="Masukkan password"
+                    validation={{
+                      required: "Password tidak boleh kosong",
+                      minLength: {
+                        value: 6,
+                        message: "Password minimal 6 karakter",
+                      },
+                    }}
+                  />
 
-                <div className='w-fit mx-auto mt-4'>
-                  <Button type='submit' variant='primary' isLoading={isLoading}>
-                    Login
-                  </Button>
-                </div>
-              </form>
-            </FormProvider>
-            <div>
-              <p className='text-center mt-4'>
-                Belum punya akun?{" "}
-                <Link href='/register' className='text-blue-500'>
-                  Register
-                </Link>
-              </p>
+                  <div className="w-fit mx-auto mt-4">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      isLoading={isLoading}
+                      className="text-white border-white"
+                    >
+                      Login
+                    </Button>
+                  </div>
+                </form>
+              </FormProvider>
+              <div>
+                <p className="text-center mt-4 text-white">
+                  Belum punya akun?{" "}
+                  <Link href="/register" className="text-blue-500">
+                    Register
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         </div>

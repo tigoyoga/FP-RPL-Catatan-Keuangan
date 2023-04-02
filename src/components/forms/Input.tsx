@@ -25,8 +25,8 @@ export default function Input({
 
   const error = errors[id];
   return (
-    <div className='mt-2 flex flex-col justify-start relative'>
-      <label className='text-left font-medium' htmlFor={id}>
+    <div className="mt-2 flex flex-col justify-start relative w-full px-5 bg-[#1A1B22] rounded-2xl min-h-[79px] mb-4">
+      <label className="text-left font-medium text-white" htmlFor={id}>
         {label}
       </label>
       <input
@@ -38,17 +38,17 @@ export default function Input({
             : "focus:ring-primary"
         }
         shadow appearance-none placeholder:text-neutral-400 outline-none border focus:ring-1 rounded w-full p-1 pl-2 text-black`}
-        type='text'
+        type="text"
         id={id}
         placeholder={placeholder}
         {...register(id, validation)}
       />
-      <div className='mt-1'>
+      <div className="mt-1">
         {helperText && (
-          <p className='text-left text-xs text-neutral-500'>{helperText}</p>
+          <p className="text-left text-xs text-neutral-500">{helperText}</p>
         )}
         {error && (
-          <p className='text-left font-normal leading-none text-[#F32013]'>
+          <p className="text-left font-normal leading-none text-[#F32013]">
             {error.message as unknown as string}
           </p>
         )}
