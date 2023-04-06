@@ -41,7 +41,7 @@ export default function Input({
             ? "ring-1 focus:ring-red-500 focus:ring-2 ring-red-500 bg-red-100"
             : "focus:ring-primary"
         }
-        bg-[#1A1B22] py-6 rounded-2xl shadow appearance-none placeholder:text-white outline-none hover:border focus:ring-2 w-full p-1 pl-2 text-white`}
+        bg-[#34364c89] py-6 rounded-2xl shadow appearance-none  placeholder:text-white outline-none hover:border focus:ring-2 w-full p-1 pl-2 text-white`}
         type="text"
         id={id}
         placeholder={placeholder}
