@@ -96,66 +96,99 @@ function Register() {
       <Head>
         <title>Register</title>
 
-        <meta name='description' content='Register page' />
+        <meta name="description" content="Register page" />
 
-        <link rel='icon' href='/favicon.ico' />
+        <link rel="icon" href="/favicon.ico" />
 
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main>
+      <main
+        className="bg-cover h-screen w-screen overflow-hidden"
+        style={{ backgroundImage: "url('/images/BG2.png')" }}
+      >
         <Toaster />
-        <div className='flex items-center justify-center h-screen'>
-          <div className='w-96 bg-white rounded-lg p-6'>
-            <h1 className='text-2xl font-medium text-center'>Register</h1>
-            <FormProvider {...methods}>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <Input
-                  id='name'
-                  label='Username'
-                  placeholder='Masukkan username'
-                  validation={{
-                    required: "Username tidak boleh kosong",
-                  }}
-                />
-                <Input
-                  id='email'
-                  label='Email'
-                  placeholder='Masukkan email'
-                  validation={{
-                    required: "Email tidak boleh kosong",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Email tidak valid",
-                    },
-                  }}
-                />
-                <PasswordInput
-                  id='password'
-                  label='Password'
-                  placeholder='Masukkan password'
-                  validation={{
-                    required: "Password tidak boleh kosong",
-                    minLength: {
-                      value: 6,
-                      message: "Password minimal 6 karakter",
-                    },
-                  }}
-                />
-
-                <div className='w-fit mx-auto mt-4'>
-                  <Button type='submit' variant='primary' isLoading={isLoading}>
-                    Register
-                  </Button>
-                </div>
-              </form>
-            </FormProvider>
-            <div>
-              <p className='text-center mt-4'>
-                Sudah punya akun?{" "}
-                <Link href='/login' className='text-blue-500'>
+        <div className="grid grid-cols-12 h-screen">
+          <div className="col-span-5 md:col-span-7">
+            <div className="flex flex-col justify-start h-full md:mt-4">
+              <div className="flex flex-row justify-start items-start">
+                <h1 className="text-2xl md:text-5xl font-medium font-serif text-[#5FB6F4] mt-10 md:mt-20 ml-12 md:ml-20">
+                  Money Tracker
+                </h1>
+                <Link
+                  href="/index"
+                  className="text-[#FFFFFF80] text-xl md:text-4xl font-bold mt-10 md:mt-20 ml-12 md:ml-20"
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/login"
+                  className="text-[#FFFFFF80] text-xl md:text-4xl font-bold mt-10 md:mt-20 ml-12 md:ml-20"
+                >
                   Login
                 </Link>
-              </p>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-12 md:col-span-5 flex justify-center items-center">
+            <div className="w-full bg-[#4b4e665b] rounded-3xl p-6 py-20 m-10 shadow-lg shadow-blue-500/30 backdrop-blur">
+              <h1 className="text-5xl font-bold text-center text-white mb-11">
+                Register
+              </h1>
+              <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <Input
+                    id="name"
+                    label="Username"
+                    placeholder="Masukkan username"
+                    validation={{
+                      required: "Username tidak boleh kosong",
+                    }}
+                  />
+                  <Input
+                    id="email"
+                    label="Email"
+                    placeholder="Masukkan email"
+                    validation={{
+                      required: "Email tidak boleh kosong",
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Email tidak valid",
+                      },
+                    }}
+                  />
+                  <PasswordInput
+                    id="password"
+                    label="Password"
+                    placeholder="Masukkan password"
+                    validation={{
+                      required: "Password tidak boleh kosong",
+                      minLength: {
+                        value: 6,
+                        message: "Password minimal 6 karakter",
+                      },
+                    }}
+                  />
+
+                  <div className="w-fit mx-auto mt-4">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      isLoading={isLoading}
+                      className="text-white border-white"
+                    >
+                      Register
+                    </Button>
+                  </div>
+                </form>
+              </FormProvider>
+              <div>
+                <p className="text-center mt-4 text-white">
+                  Sudah punya akun?{" "}
+                  <Link href="/login" className="text-[#4757cc] font-bold">
+                    Login
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         </div>
