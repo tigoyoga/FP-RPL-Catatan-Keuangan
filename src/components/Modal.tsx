@@ -33,7 +33,7 @@ const Modal = ({
   return (
     <div>
       <Transition appear show={isOpen} as={React.Fragment}>
-        <Dialog as='div' className='relative z-10 ' onClose={() => {}}>
+        <Dialog as='div' className='relative z-10' onClose={() => {}}>
           <Transition.Child
             as={React.Fragment}
             enter='ease-out duration-300'
@@ -79,12 +79,22 @@ const Modal = ({
                       <form onSubmit={handleSubmit(onSubmit)}>
                         {children}
                         <div className='mt-4 space-x-2 flex justify-end'>
-                          <button
-                            type='submit'
-                            className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                          >
-                            Buat
-                          </button>
+                          {type !== "hapusModal" && (
+                            <button
+                              type='submit'
+                              className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                            >
+                              Buat
+                            </button>
+                          )}
+                          {type === "hapusModal" && (
+                            <button
+                              type='submit'
+                              className='inline-flex justify-center rounded-md border border-transparent bg-red-100 px-8 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2'
+                            >
+                              Ya
+                            </button>
+                          )}
                         </div>
                       </form>
                     </FormProvider>

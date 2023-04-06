@@ -7,7 +7,7 @@ import Modal from "@/components/Modal";
 import toast from "react-hot-toast";
 
 import { api, apiWithToken } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
 
 import Input from "@/components/forms/Input";
@@ -22,13 +22,23 @@ export default function Home() {
   const user = useAuthStore.useUser();
 
   let [isOpen, setIsOpen] = React.useState(false);
+  const [deleteModal, setDeleteModal] = React.useState(false);
+  const [deleteId, setDeleteId] = React.useState<number>(0);
 
-  function closeModal() {
-    setIsOpen(false);
+  function closeModal(type: string) {
+    if (type === "dompet") {
+      setIsOpen(false);
+    } else {
+      setDeleteModal(false);
+    }
   }
 
-  function openModal() {
-    setIsOpen(true);
+  function openModal(type: string) {
+    if (type === "add") {
+      setIsOpen(true);
+    } else {
+      setDeleteModal(true);
+    }
   }
 
   const router = useRouter();
@@ -72,45 +82,82 @@ export default function Home() {
     };
   }, [checkAuth]);
 
-  const deleteDompet = (id: string) => {
-    apiWithToken()
-      .delete(`/secured/dompet/${id}`)
-      .then((response) => {
-        console.log(response);
+  // usequery to fetch /me
+  const { data: dataUtama, isLoading: isFetching } = useQuery(
+    ["dompet"],
+    async () => {
+      const res = await apiWithToken().get("/secured/me");
+      return res.data.data.list_dompet;
+    },
+    {
+      enabled: isAuthenticated,
+    }
+  );
+
+  // mutate delete dompet
+  const { mutate: deleteDompet } = useMutation(
+    async (id: string) => {
+      const response = await toast.promise(
+        apiWithToken().delete(`/secured/dompet/${id}`),
+        {
+          loading: "Loading",
+          success: "Success",
+          error: "Error",
+        }
+      );
+
+      return response.data.data;
+    },
+    {
+      onSuccess: () => {
         router.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
 
   if (!isAuthenticated) {
     if (router.isReady) router.push("/login");
   }
 
+  // usemutation for add dompet
+  const { mutate: addDompet } = useMutation(
+    async (data: any) => {
+      data.saldo = Number(data.saldo);
+
+      const response = await toast.promise(
+        apiWithToken().post("/secured/dompet", data),
+        {
+          loading: "Loading",
+          success: "Success",
+          error: "Error",
+        }
+      );
+
+      return response.data.data;
+    },
+    {
+      onError: (error: any) => {
+        console.log(error);
+      },
+      onSuccess: (data: any) => {
+        closeModal("add");
+        router.reload();
+      },
+    }
+  );
+
   const onSubmit = (data: any) => {
-    data.saldo = Number(data.saldo);
-
-    toast.promise(
-      apiWithToken()
-        .post("/secured/dompet", data)
-        .then((response) => {
-          closeModal();
-
-          router.reload();
-        })
-        .catch((error) => {
-          console.log(error);
-        }),
-      {
-        loading: "Loading",
-        success: "Success",
-        error: "Error",
-      }
-    );
+    if (data.nama_dompet) {
+      addDompet(data);
+    } else {
+      deleteDompet(deleteId.toString());
+    }
   };
 
-  if (isLoading || !router.isReady) {
+  if (isLoading || !router.isReady || isFetching) {
     return <Loading />;
   }
 
@@ -133,7 +180,7 @@ export default function Home() {
           <div className='flex flex-col items-center justify-center gap-4 h-full'>
             <button
               type='button'
-              onClick={openModal}
+              onClick={() => openModal("add")}
               className='rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
             >
               Tambah Dompet
@@ -152,7 +199,18 @@ export default function Home() {
         </aside>
 
         <section className='w-[82%] flex flex-col gap-12 h-screen overflow-auto pb-8'>
-          {/* add modal component with children */}
+          <Modal
+            onSubmit={onSubmit}
+            isOpen={deleteModal}
+            type='hapusModal'
+            closeModal={closeModal}
+            title='Konfirmasi'
+          >
+            <p className='text-center text-lg font-semibold'>
+              Apakah anda yakin ingin menghapus dompet ini?
+            </p>
+          </Modal>
+
           <Modal
             onSubmit={onSubmit}
             isOpen={isOpen}
@@ -183,14 +241,14 @@ export default function Home() {
               }}
             />
           </Modal>
+
           <div className='w-11/12 mx-auto p-4 rounded-xl space-y-2 min-h-[18rem] bg-neutral-100'>
             <h1 className='text-xl font-semibold'>Dompet Pribadi</h1>
             <div className='grid justify-center items-center grid-cols-5 gap-2'>
               {/* map the list dompet */}
-              {user &&
-                user?.data?.map(
+              {dataUtama &&
+                dataUtama?.map(
                   (item: any) =>
-                    // filter if the user id is equal to the dompet user id
                     item.user_id === user?.id && (
                       <div
                         onClick={() => router.push(`/dompet/${item.id}`)}
@@ -211,7 +269,12 @@ export default function Home() {
                         {/* delet dompet */}
                         <button
                           type='button'
-                          onClick={() => deleteDompet(item.id)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setDeleteId(item.id);
+                            openModal("delete");
+                            // deleteDompet(item.id);
+                          }}
                           className='mt-4 rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
                         >
                           Hapus
@@ -225,8 +288,8 @@ export default function Home() {
             <h1 className='text-xl font-semibold'>Dompet Kolaborasi</h1>
             <div className='grid justify-center items-center grid-cols-5 gap-2'>
               {/* map the list dompet */}
-              {user &&
-                user?.data?.map(
+              {dataUtama &&
+                dataUtama?.map(
                   (item: any) =>
                     item.user_id !== user?.id && (
                       <div
@@ -246,13 +309,6 @@ export default function Home() {
                         </h1>
 
                         {/* delet dompet */}
-                        <button
-                          type='button'
-                          onClick={() => deleteDompet(item.id)}
-                          className='mt-4 rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
-                        >
-                          Hapus
-                        </button>
                       </div>
                     )
                 )}

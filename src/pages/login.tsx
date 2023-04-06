@@ -83,10 +83,10 @@ function Login() {
     }
   });
 
-  // if (isLoading) return <Loading />;
+  if (isLoading || !router.isReady) return <Loading />;
 
   if (isAuthenticated) {
-    if (router.isReady) router.push("/");
+    router.push("/");
   }
 
   const onSubmit = (data: any) => {

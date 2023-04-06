@@ -94,6 +94,17 @@ const DetailDompet = () => {
     };
   }, [checkAuth]);
 
+  const { data: dataUtama, isLoading: isFetching } = useQuery(
+    ["dompet"],
+    async () => {
+      const res = await apiWithToken().get("/secured/me");
+      return res.data.data.list_dompet;
+    },
+    {
+      enabled: isAuthenticated,
+    }
+  );
+
   const { data: dataDompet, isLoading } = useQuery(
     ["dompet", id],
     async () => {
@@ -266,17 +277,10 @@ const DetailDompet = () => {
 
   const onSubmit = (data: any) => {
     if (data.pemasukan) {
-      if (data.pemasukan == 0) {
-        toast.error("Pemasukan tidak boleh 0");
-        return;
-      }
       addPemasukan(data);
     } else if (data.pengeluaran) {
       if (data.pengeluaran > dataDompet.saldo) {
         toast.error("Saldo tidak cukup ");
-        return;
-      } else if (data.pengeluaran == 0) {
-        toast.error("Pengeluaran tidak boleh 0");
         return;
       }
       addPengeluaran(data);
@@ -286,6 +290,10 @@ const DetailDompet = () => {
       addTransfer(data);
     }
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -335,6 +343,10 @@ const DetailDompet = () => {
             placeholder='Masukkan Jumlah Pemasukan'
             validation={{
               required: "Jumlah Pemasukan tidak boleh kosong",
+              min: {
+                value: 1,
+                message: "Nominal tidak boleh 0",
+              },
             }}
           />
           <SelectInput
@@ -376,6 +388,10 @@ const DetailDompet = () => {
             placeholder='Masukkan Jumlah Pengeluaran'
             validation={{
               required: "Jumlah Pengeluaran tidak boleh kosong",
+              min: {
+                value: 1,
+                message: "Nominal tidak boleh 0",
+              },
             }}
           />
           <SelectInput
@@ -402,7 +418,7 @@ const DetailDompet = () => {
           isOpen={isOpenTransfer}
           type='transfer'
           closeModal={closeModal}
-          title='Tambah Pengeluaran'
+          title='Tambah Transfer'
         >
           <SelectInput
             id='nama_dompet'
@@ -428,6 +444,11 @@ const DetailDompet = () => {
             placeholder='Masukkan Jumlah Transfer'
             validation={{
               required: "Jumlah Transfer tidak boleh kosong",
+
+              min: {
+                value: 1,
+                message: "Nominal tidak boleh 0",
+              },
             }}
           />
           <Input
@@ -436,14 +457,6 @@ const DetailDompet = () => {
             placeholder='Masukkan Deskripsi'
             validation={{
               required: "Deskripsi tidak boleh kosong",
-            }}
-          />
-          <Input
-            id='kategori'
-            label='Kategori'
-            placeholder='Masukkan Kategori'
-            validation={{
-              required: "Kategori tidak boleh kosong",
             }}
           />
         </Modal>
@@ -501,7 +514,7 @@ const DetailDompet = () => {
                 <BiTransfer className='text-2xl' />
               </div>
             </div>
-            <h1 className=''>
+            <h1 className='text-3xl font-bold'>
               {new Intl.NumberFormat("id-ID", {
                 style: "currency",
                 currency: "IDR",
@@ -523,7 +536,7 @@ const DetailDompet = () => {
             className='w-11/12 mx-auto border text-left border-collapse'
             style={{ borderSpacing: 0 }}
           >
-            <thead>
+            <thead className='text-center'>
               <tr>
                 <th className='py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light'>
                   Deskripsi
@@ -542,7 +555,7 @@ const DetailDompet = () => {
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className='text-center'>
               {dataDompet?.list_catatan_keuangan?.map((item: any) => (
                 <tr
                   key={item.id}
@@ -553,13 +566,17 @@ const DetailDompet = () => {
                   <td className='py-4 px-6 border-b border-grey-light'>
                     {item.deskripsi}
                   </td>
-                  <td className='py-4 px-6 border-b border-grey-light'>
+                  <td
+                    className={`${
+                      item.pengeluaran !== 0 ? "text-red-500" : "text-green-500"
+                    }  font-semibold py-4 px-6 border-b border-grey-light`}
+                  >
                     {/* check if item is pengeluaran or pemasukan and then format to currency */}
-                    {item.jenis === "Pengeluaran"
-                      ? `Rp. ${new Intl.NumberFormat("id-ID").format(
+                    {item.pengeluaran !== 0
+                      ? `- Rp. ${new Intl.NumberFormat("id-ID").format(
                           item.pengeluaran
                         )}`
-                      : `Rp. ${new Intl.NumberFormat("id-ID").format(
+                      : `+ Rp. ${new Intl.NumberFormat("id-ID").format(
                           item.pemasukan
                         )}`}
                   </td>
@@ -567,7 +584,17 @@ const DetailDompet = () => {
                     {item.kategori}
                   </td>
                   <td className='py-4 px-6 border-b border-grey-light'>
-                    {item.jenis}
+                    <span
+                      className={`${
+                        item.jenis === "Pemasukan"
+                          ? "bg-green-500"
+                          : item.jenis === "Pengeluaran"
+                          ? "bg-red-500"
+                          : "bg-yellow-500"
+                      } bg-red-400 px-4 py-2 rounded-full text-gray-100`}
+                    >
+                      {item.jenis}
+                    </span>
                   </td>
                   <td className='py-4 px-6 border-b border-grey-light'>
                     {new Date(item.tanggal).toLocaleDateString("id-ID")}
@@ -576,6 +603,12 @@ const DetailDompet = () => {
               ))}
             </tbody>
           </table>
+          {/* show text when data length is 0 */}
+          {dataDompet?.list_catatan_keuangan === undefined && (
+            <div className='w-11/12 mx-auto h-12 flex items-center justify-center'>
+              <h1 className='text-gray-400'>Tidak ada catatan keuangan</h1>
+            </div>
+          )}
         </section>
       </main>
     </>
