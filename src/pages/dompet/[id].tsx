@@ -296,19 +296,21 @@ const DetailDompet = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-<<<<<<< HEAD
-      <main className='flex overflow-hidden'>
+      <main
+        className="flex overflow-hidden bg-cover bg-[#252635] h-full w-full"
+        style={{ backgroundImage: "url('/images/Dashboard Utama.png')" }}
+      >
         <Modal
           onSubmit={onSubmit}
           isOpen={isOpenKolab}
-          type='kolab'
+          type="kolab"
           closeModal={closeModal}
-          title='Tambah Kolaborator'
+          title="Tambah Kolaborator"
         >
           <Input
-            id='user_email'
-            label='Email'
-            placeholder='Masukkan Email'
+            id="user_email"
+            label="Email"
+            placeholder="Masukkan Email"
             validation={{
               required: "Email tidak boleh kosong",
             }}
@@ -318,35 +320,35 @@ const DetailDompet = () => {
         <Modal
           onSubmit={onSubmit}
           isOpen={isOpenPemasukan}
-          type='pemasukan'
+          type="pemasukan"
           closeModal={closeModal}
-          title='Tambah Pemasukan'
+          title="Tambah Pemasukan"
         >
           <Input
-            id='deskripsi'
-            label='Deskripsi'
-            placeholder='Masukkan Deskripsi'
+            id="deskripsi"
+            label="Deskripsi"
+            placeholder="Masukkan Deskripsi"
             validation={{
               required: "Deskripsi tidak boleh kosong",
             }}
           />
           <Input
-            id='pemasukan'
-            label='Pemasukan'
-            placeholder='Masukkan Jumlah Pemasukan'
+            id="pemasukan"
+            label="Pemasukan"
+            placeholder="Masukkan Jumlah Pemasukan"
             validation={{
               required: "Jumlah Pemasukan tidak boleh kosong",
             }}
           />
           <SelectInput
-            id='kategori'
-            label='Kategori'
-            placeholder='Pilih Kategori'
+            id="kategori"
+            label="Kategori"
+            placeholder="Pilih Kategori"
             validation={{
               required: "Kategori tidak boleh kosong",
             }}
           >
-            <option value=''>Pilih Kategori</option>
+            <option value="">Pilih Kategori</option>
             {dataKategoriPemasukan?.map(
               (item: { nama_kategori: string }, index: number) => (
                 <option key={index} value={item.nama_kategori}>
@@ -359,35 +361,35 @@ const DetailDompet = () => {
         <Modal
           onSubmit={onSubmit}
           isOpen={isOpenPengeluaran}
-          type='pengeluaran'
+          type="pengeluaran"
           closeModal={closeModal}
-          title='Tambah Pengeluaran'
+          title="Tambah Pengeluaran"
         >
           <Input
-            id='deskripsi'
-            label='Deskripsi'
-            placeholder='Masukkan Deskripsi'
+            id="deskripsi"
+            label="Deskripsi"
+            placeholder="Masukkan Deskripsi"
             validation={{
               required: "Deskripsi tidak boleh kosong",
             }}
           />
           <Input
-            id='pengeluaran'
-            label='Pengeluaran'
-            placeholder='Masukkan Jumlah Pengeluaran'
+            id="pengeluaran"
+            label="Pengeluaran"
+            placeholder="Masukkan Jumlah Pengeluaran"
             validation={{
               required: "Jumlah Pengeluaran tidak boleh kosong",
             }}
           />
           <SelectInput
-            id='kategori'
-            label='Kategori'
-            placeholder='Pilih Kategori'
+            id="kategori"
+            label="Kategori"
+            placeholder="Pilih Kategori"
             validation={{
               required: "Kategori tidak boleh kosong",
             }}
           >
-            <option value=''>Pilih Kategori</option>
+            <option value="">Pilih Kategori</option>
 
             {dataKategoriPengeluaran?.map(
               (item: { nama_kategori: string }, index: number) => (
@@ -401,19 +403,19 @@ const DetailDompet = () => {
         <Modal
           onSubmit={onSubmit}
           isOpen={isOpenTransfer}
-          type='transfer'
+          type="transfer"
           closeModal={closeModal}
-          title='Tambah Pengeluaran'
+          title="Tambah Pengeluaran"
         >
           <SelectInput
-            id='nama_dompet'
-            label='Nama Dompet'
-            placeholder='Pilih Dompet'
+            id="nama_dompet"
+            label="Nama Dompet"
+            placeholder="Pilih Dompet"
             validation={{
               required: "Nama Dompet tidak boleh kosong",
             }}
           >
-            <option value=''>Pilih Dompet</option>
+            <option value="">Pilih Dompet</option>
             {dataDompet &&
               user?.data.map((item: any, index: number) =>
                 item.user_id === user?.id && dataDompet.id !== item.id ? (
@@ -424,89 +426,37 @@ const DetailDompet = () => {
               )}
           </SelectInput>
           <Input
-            id='nominal'
-            label='Nominal'
-            placeholder='Masukkan Jumlah Transfer'
+            id="nominal"
+            label="Nominal"
+            placeholder="Masukkan Jumlah Transfer"
             validation={{
               required: "Jumlah Transfer tidak boleh kosong",
             }}
           />
           <Input
-            id='deskripsi'
-            label='Deskripsi'
-            placeholder='Masukkan Deskripsi'
+            id="deskripsi"
+            label="Deskripsi"
+            placeholder="Masukkan Deskripsi"
             validation={{
               required: "Deskripsi tidak boleh kosong",
             }}
           />
           <Input
-            id='kategori'
-            label='Kategori'
-            placeholder='Masukkan Kategori'
+            id="kategori"
+            label="Kategori"
+            placeholder="Masukkan Kategori"
             validation={{
               required: "Kategori tidak boleh kosong",
             }}
           />
         </Modal>
         {/* create sidebar with aside */}
-        <aside className='w-[18%] h-screen bg-gray-800'>
-          <div className='flex flex-col items-center justify-center h-32'>
-            <h1 className='text-white text-2xl font-bold'>Catatan Keuangan</h1>
-            <p className='text-xl text-white mt-4'>Hello, {user?.name}</p>
-          </div>
-          <div className='flex flex-col items-center justify-center gap-4 h-full'>
-=======
-      <main
-        className="flex overflow-hidden bg-cover bg-[#252635] h-full w-full"
-        style={{ backgroundImage: "url('/images/Dashboard Utama.png')" }}
-      >
-        {/* create sidebar with aside */}
-        <aside className="w-1/5 h-screen bg-gray-800">
+        <aside className="w-[18%] h-screen bg-gray-800">
           <div className="flex flex-col items-center justify-center h-32">
             <h1 className="text-white text-2xl font-bold">Catatan Keuangan</h1>
-            <p className="text-xl text-white">{user?.name}</p>
-            <h1 className="text-xl font-bold text-white">
-              {/* format balance to rupiah */}
-              {new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR",
-              }).format(dataDompet?.saldo)}
-            </h1>
+            <p className="text-xl text-white mt-4">Hello, {user?.name}</p>
           </div>
-          <div className="flex flex-col items-center justify-center gap-4 h-full text-white">
-            {user?.id === dataDompet?.user_id && (
-              <button
-                onClick={() => {
-                  openModal("kolab");
-                }}
-              >
-                Add Kolaborator
-              </button>
-            )}
-
-            <button
-              type="button"
-              onClick={() => openModal("pemasukan")}
-              className="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-            >
-              Tambah Pemasukan
-            </button>
-            <button
-              type="button"
-              onClick={() => openModal("pengeluaran")}
-              className="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-            >
-              Tambah Pengeluaran
-            </button>
-            <button
-              type="button"
-              onClick={() => openModal("transfer")}
-              className="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-            >
-              Transfer
-            </button>
-
->>>>>>> a95a8f6 (feat; add ui login,register, and dashboard pages)
+          <div className="flex flex-col items-center justify-center gap-4 h-full">
             <button
               type="button"
               onClick={() => {
@@ -531,205 +481,49 @@ const DetailDompet = () => {
           </div>
         </aside>
 
-<<<<<<< HEAD
-        <section className='w-[82%] flex flex-col gap-12 h-screen overflow-auto pb-8 pt-12'>
-          <div className='w-11/12 mx-auto h-12 flex items-center justify-between'>
-            <div className='flex gap-3'>
+        <section className="w-[82%] flex flex-col gap-12 h-screen overflow-auto pb-8 pt-12">
+          <div className="w-11/12 mx-auto h-12 flex items-center justify-between">
+            <div className="flex gap-3">
               <div
                 onClick={() => openModal("pemasukan")}
-                className='h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer'
+                className="h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer"
               >
-                <GiPayMoney className='text-2xl' />
+                <GiPayMoney className="text-2xl text-white" />
               </div>
 
               <div
                 onClick={() => openModal("pengeluaran")}
-                className='h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer'
+                className="h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer"
               >
-                <GiReceiveMoney className='text-2xl' />
+                <GiReceiveMoney className="text-2xl text-white" />
               </div>
               <div
                 onClick={() => openModal("transfer")}
-                className='h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer'
+                className="h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer"
               >
-                <BiTransfer className='text-2xl' />
+                <BiTransfer className="text-2xl text-white" />
               </div>
             </div>
-            <h1 className=''>
+            <h1 className="text-white">
               {new Intl.NumberFormat("id-ID", {
                 style: "currency",
                 currency: "IDR",
               }).format(dataDompet?.saldo)}
             </h1>
-            <div className='flex gap-3'>
+            <div className="flex gap-3">
               <div
                 onClick={() => openModal("kolab")}
                 className={`${
                   user?.id === dataDompet?.user_id ? "block" : "hidden"
                 } h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer`}
               >
-                <HiUserAdd className='text-2xl' />
+                <HiUserAdd className="text-2xl text-white" />
               </div>
             </div>
           </div>
 
           <table
-            className='w-11/12 mx-auto border text-left border-collapse'
-=======
-        <section className="w-4/5 flex flex-col gap-12 h-screen overflow-auto pb-8">
-          {/* add modal component with children */}
-          <Modal
-            onSubmit={onSubmit}
-            isOpen={isOpenKolab}
-            type="kolab"
-            closeModal={closeModal}
-            title="Tambah Kolaborator"
-          >
-            <Input
-              id="user_email"
-              label="Email"
-              placeholder="Masukkan Email"
-              validation={{
-                required: "Email tidak boleh kosong",
-              }}
-            />
-          </Modal>
-          <Modal
-            onSubmit={onSubmit}
-            isOpen={isOpenPemasukan}
-            type="pemasukan"
-            closeModal={closeModal}
-            title="Tambah Pemasukan"
-          >
-            <Input
-              id="deskripsi"
-              label="Deskripsi"
-              placeholder="Masukkan Deskripsi"
-              validation={{
-                required: "Deskripsi tidak boleh kosong",
-              }}
-            />
-            <Input
-              id="pemasukan"
-              label="Pemasukan"
-              placeholder="Masukkan Jumlah Pemasukan"
-              validation={{
-                required: "Jumlah Pemasukan tidak boleh kosong",
-              }}
-            />
-            <SelectInput
-              id="kategori"
-              label="Kategori"
-              placeholder="Pilih Kategori"
-              validation={{
-                required: "Kategori tidak boleh kosong",
-              }}
-            >
-              <option value="">Pilih Kategori</option>
-              {dataKategoriPemasukan?.map(
-                (item: { nama_kategori: string }, index: number) => (
-                  <option key={index} value={item.nama_kategori}>
-                    {item.nama_kategori}
-                  </option>
-                )
-              )}
-            </SelectInput>
-          </Modal>
-          <Modal
-            onSubmit={onSubmit}
-            isOpen={isOpenPengeluaran}
-            type="pengeluaran"
-            closeModal={closeModal}
-            title="Tambah Pengeluaran"
-          >
-            <Input
-              id="deskripsi"
-              label="Deskripsi"
-              placeholder="Masukkan Deskripsi"
-              validation={{
-                required: "Deskripsi tidak boleh kosong",
-              }}
-            />
-            <Input
-              id="pengeluaran"
-              label="Pengeluaran"
-              placeholder="Masukkan Jumlah Pengeluaran"
-              validation={{
-                required: "Jumlah Pengeluaran tidak boleh kosong",
-              }}
-            />
-            <SelectInput
-              id="kategori"
-              label="Kategori"
-              placeholder="Pilih Kategori"
-              validation={{
-                required: "Kategori tidak boleh kosong",
-              }}
-            >
-              <option value="">Pilih Kategori</option>
-
-              {dataKategoriPengeluaran?.map(
-                (item: { nama_kategori: string }, index: number) => (
-                  <option key={index} value={item.nama_kategori}>
-                    {item.nama_kategori}
-                  </option>
-                )
-              )}
-            </SelectInput>
-          </Modal>
-          <Modal
-            onSubmit={onSubmit}
-            isOpen={isOpenTransfer}
-            type="transfer"
-            closeModal={closeModal}
-            title="Tambah Pengeluaran"
-          >
-            <SelectInput
-              id="nama_dompet"
-              label="Nama Dompet"
-              placeholder="Pilih Dompet"
-              validation={{
-                required: "Nama Dompet tidak boleh kosong",
-              }}
-            >
-              <option value="">Pilih Dompet</option>
-              {user?.data.map((item: any, index: number) =>
-                item.user_id === user?.id && dataDompet.id !== item.id ? (
-                  <option key={index} value={item.nama_dompet}>
-                    {item.nama_dompet}
-                  </option>
-                ) : null
-              )}
-            </SelectInput>
-            <Input
-              id="nominal"
-              label="Nominal"
-              placeholder="Masukkan Jumlah Transfer"
-              validation={{
-                required: "Jumlah Transfer tidak boleh kosong",
-              }}
-            />
-            <Input
-              id="deskripsi"
-              label="Deskripsi"
-              placeholder="Masukkan Deskripsi"
-              validation={{
-                required: "Deskripsi tidak boleh kosong",
-              }}
-            />
-            <Input
-              id="kategori"
-              label="Kategori"
-              placeholder="Masukkan Kategori"
-              validation={{
-                required: "Kategori tidak boleh kosong",
-              }}
-            />
-          </Modal>
-
-          <table
-            className="w-full text-left border-collapse text-white"
->>>>>>> a95a8f6 (feat; add ui login,register, and dashboard pages)
+            className="w-11/12 mx-auto border text-left text-white border-collapse"
             style={{ borderSpacing: 0 }}
           >
             <thead>

@@ -28,16 +28,12 @@ const Modal = ({
       methods.reset();
       methods.clearErrors();
     }
-  }, [isOpen]);
+  }, [isOpen, methods]);
 
   return (
     <div>
       <Transition appear show={isOpen} as={React.Fragment}>
-<<<<<<< HEAD
-        <Dialog as='div' className='relative z-10 ' onClose={() => {}}>
-=======
         <Dialog as="div" className="relative z-10" onClose={() => {}}>
->>>>>>> a95a8f6 (feat; add ui login,register, and dashboard pages)
           <Transition.Child
             as={React.Fragment}
             enter="ease-out duration-300"

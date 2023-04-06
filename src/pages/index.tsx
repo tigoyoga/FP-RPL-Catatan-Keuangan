@@ -128,17 +128,10 @@ export default function Home() {
         style={{ backgroundImage: "url('/images/Dashboard Utama.png')" }}
       >
         {/* create sidebar with aside */}
-<<<<<<< HEAD
-        <aside className='w-[18%] h-screen bg-gray-800'>
-          <div className='flex flex-col items-center justify-center h-32'>
-            <h1 className='text-white text-2xl font-bold'>Catatan Keuangan</h1>
-            <p className='text-xl text-white mt-4'>Hello, {user?.name}</p>
-=======
-        <aside className="w-1/5 h-screen bg-gray-800">
+        <aside className="w-[18%] h-screen bg-gray-800">
           <div className="flex flex-col items-center justify-center h-32">
             <h1 className="text-white text-2xl font-bold">Catatan Keuangan</h1>
-            <p className="text-xl text-white">{user?.name}</p>
->>>>>>> a95a8f6 (feat; add ui login,register, and dashboard pages)
+            <p className="text-xl text-white mt-4">Hello, {user?.name}</p>
           </div>
           <div className="flex flex-col items-center justify-center gap-4 h-full">
             <button
@@ -161,11 +154,7 @@ export default function Home() {
           </div>
         </aside>
 
-<<<<<<< HEAD
-        <section className='w-[82%] flex flex-col gap-12 h-screen overflow-auto pb-8'>
-=======
-        <section className="w-4/5 flex flex-col gap-12 h-screen overflow-auto pb-8">
->>>>>>> a95a8f6 (feat; add ui login,register, and dashboard pages)
+        <section className="w-[82%] flex flex-col gap-12 h-screen overflow-auto pb-8">
           {/* add modal component with children */}
           <Modal
             onSubmit={onSubmit}
@@ -209,11 +198,7 @@ export default function Home() {
                       <div
                         onClick={() => router.push(`/dompet/${item.id}`)}
                         key={item.id}
-<<<<<<< HEAD
-                        className='w-auto h-40 p-4 bg-white border border-gray-500 rounded-xl flex hover:cursor-pointer flex-col justify-center items-center'
-=======
                         className="w-auto h-40 p-4 bg-gradient-to-b from-[#43B6E9] to-[#5F4A8B] rounded-xl border-2 border-gray-500 flex hover:cursor-pointer flex-col justify-center items-center"
->>>>>>> a95a8f6 (feat; add ui login,register, and dashboard pages)
                       >
                         <h1 className="text-white text-2xl font-bold">
                           {item.nama_dompet}
@@ -250,11 +235,7 @@ export default function Home() {
                       <div
                         onClick={() => router.push(`/dompet/${item.id}`)}
                         key={item.id}
-<<<<<<< HEAD
-                        className='w-auto h-40 p-4 bg-white rounded-xl border border-gray-500 flex hover:cursor-pointer flex-col justify-center items-center'
-=======
                         className="w-auto h-40 p-4 bg-gradient-to-b from-[#E943BB] to-[#5F4A8B] rounded-xl border-2 border-gray-500 flex hover:cursor-pointer flex-col justify-center items-center"
->>>>>>> a95a8f6 (feat; add ui login,register, and dashboard pages)
                       >
                         <h1 className="text-2xl font-bold">
                           {item.nama_dompet}
