@@ -245,8 +245,8 @@ export default function Home() {
             />
           </Modal>
 
-          <div className='w-11/12 mx-auto p-4 rounded-xl space-y-2 min-h-[18rem] bg-neutral-100'>
-            <h1 className='text-xl font-semibold'>Dompet Pribadi</h1>
+          <div className='w-11/12 mx-auto p-4 rounded-xl space-y-2 min-h-[18rem]'>
+            <h1 className='text-2xl font-bold text-white'>Dompet Pribadi</h1>
             <div className='grid justify-center items-center grid-cols-5 gap-2'>
               {/* map the list dompet */}
               {dataUtama &&

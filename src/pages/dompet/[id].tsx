@@ -560,8 +560,8 @@ const DetailDompet = () => {
                 <tr
                   key={item.id}
                   className={`${
-                    item.id % 2 === 0 ? "bg-transparent" : ""
-                  } hover:bg-gray-900`}
+                    item.id % 2 === 0 ? "bg-transparent" : "bg-gray-100"
+                  }`}
                 >
                   <td className='py-4 px-6 border-b border-grey-light'>
                     {item.deskripsi}
@@ -591,7 +591,7 @@ const DetailDompet = () => {
                           : item.jenis === "Pengeluaran"
                           ? "bg-red-500"
                           : "bg-yellow-500"
-                      } bg-red-400 px-4 py-2 rounded-full text-gray-100`}
+                      } px-4 py-2 rounded-full text-gray-100`}
                     >
                       {item.jenis}
                     </span>
