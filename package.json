@@ -26,7 +26,8 @@
     "react-hook-form": "^7.43.7",
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.8.0",
-    "react-router-dom": "^6.9.0",
+    "react-router-dom": "^6.10.0",
+    "tippy.js": "^6.3.7",
     "typescript": "5.0.2",
     "zustand": "^4.3.6"
   },

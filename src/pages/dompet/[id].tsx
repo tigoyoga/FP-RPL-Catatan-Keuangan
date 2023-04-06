@@ -11,6 +11,11 @@ import Input from "@/components/forms/Input";
 import Head from "next/head";
 import { toast } from "react-hot-toast";
 import SelectInput from "@/components/forms/SelectInput";
+import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
+import { BiTransfer } from "react-icons/bi";
+import { HiUserAdd } from "react-icons/hi";
+import tippy from "tippy.js";
+import "tippy.js/dist/tippy.css";
 
 const DetailDompet = () => {
   const router = useRouter();
@@ -144,10 +149,19 @@ const DetailDompet = () => {
       const token = localStorage.getItem("token");
 
       if (token) {
-        const response = await apiWithToken().put(
-          `/secured/collab/${id}`,
-          data
+        const response = await toast.promise(
+          apiWithToken().put(`/secured/collab/${id}`, data),
+          {
+            loading: "Loading",
+            success: (data) => {
+              return "Berhasil menambahkan kolaborator";
+            },
+            error: (error) => {
+              return error.response.data.message;
+            },
+          }
         );
+
         return response.data.data;
       }
     },
@@ -166,7 +180,18 @@ const DetailDompet = () => {
       data.pemasukan = Number(data.pemasukan);
       data.dompet_id = Number(id);
 
-      const response = await apiWithToken().post(`/secured/pemasukan`, data);
+      const response = await toast.promise(
+        apiWithToken().post(`/secured/pemasukan`, data),
+        {
+          loading: "Loading",
+          success: (data) => {
+            return "Berhasil menambahkan pemasukan";
+          },
+          error: (error) => {
+            return "Error";
+          },
+        }
+      );
 
       return response.data.data;
     },
@@ -185,7 +210,18 @@ const DetailDompet = () => {
       data.pengeluaran = Number(data.pengeluaran);
       data.dompet_id = Number(id);
 
-      const response = await apiWithToken().post(`/secured/pengeluaran`, data);
+      const response = await toast.promise(
+        apiWithToken().post(`/secured/pengeluaran`, data),
+        {
+          loading: "Loading",
+          success: (data) => {
+            return "Berhasil menambahkan pengeluaran";
+          },
+          error: (error) => {
+            return "Error";
+          },
+        }
+      );
 
       return response.data.data;
     },
@@ -203,9 +239,17 @@ const DetailDompet = () => {
     async (data: any) => {
       data.nominal = Number(data.nominal);
 
-      const response = await apiWithToken().post(
-        `/secured/transfer/${id}`,
-        data
+      const response = await toast.promise(
+        apiWithToken().post(`/secured/transfer/${id}`, data),
+        {
+          loading: "Loading",
+          success: (data) => {
+            return "Berhasil menambahkan transfer";
+          },
+          error: (error) => {
+            return error.response.data.message;
+          },
+        }
       );
 
       return response.data.data;
@@ -236,14 +280,12 @@ const DetailDompet = () => {
         return;
       }
       addPengeluaran(data);
-    } else if (data.email) {
+    } else if (data.user_email) {
       addKolab(data);
     } else if (data.nominal) {
       addTransfer(data);
     }
   };
-
-  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -255,52 +297,163 @@ const DetailDompet = () => {
       </Head>
 
       <main className='flex overflow-hidden'>
+        <Modal
+          onSubmit={onSubmit}
+          isOpen={isOpenKolab}
+          type='kolab'
+          closeModal={closeModal}
+          title='Tambah Kolaborator'
+        >
+          <Input
+            id='user_email'
+            label='Email'
+            placeholder='Masukkan Email'
+            validation={{
+              required: "Email tidak boleh kosong",
+            }}
+          />
+        </Modal>
+
+        <Modal
+          onSubmit={onSubmit}
+          isOpen={isOpenPemasukan}
+          type='pemasukan'
+          closeModal={closeModal}
+          title='Tambah Pemasukan'
+        >
+          <Input
+            id='deskripsi'
+            label='Deskripsi'
+            placeholder='Masukkan Deskripsi'
+            validation={{
+              required: "Deskripsi tidak boleh kosong",
+            }}
+          />
+          <Input
+            id='pemasukan'
+            label='Pemasukan'
+            placeholder='Masukkan Jumlah Pemasukan'
+            validation={{
+              required: "Jumlah Pemasukan tidak boleh kosong",
+            }}
+          />
+          <SelectInput
+            id='kategori'
+            label='Kategori'
+            placeholder='Pilih Kategori'
+            validation={{
+              required: "Kategori tidak boleh kosong",
+            }}
+          >
+            <option value=''>Pilih Kategori</option>
+            {dataKategoriPemasukan?.map(
+              (item: { nama_kategori: string }, index: number) => (
+                <option key={index} value={item.nama_kategori}>
+                  {item.nama_kategori}
+                </option>
+              )
+            )}
+          </SelectInput>
+        </Modal>
+        <Modal
+          onSubmit={onSubmit}
+          isOpen={isOpenPengeluaran}
+          type='pengeluaran'
+          closeModal={closeModal}
+          title='Tambah Pengeluaran'
+        >
+          <Input
+            id='deskripsi'
+            label='Deskripsi'
+            placeholder='Masukkan Deskripsi'
+            validation={{
+              required: "Deskripsi tidak boleh kosong",
+            }}
+          />
+          <Input
+            id='pengeluaran'
+            label='Pengeluaran'
+            placeholder='Masukkan Jumlah Pengeluaran'
+            validation={{
+              required: "Jumlah Pengeluaran tidak boleh kosong",
+            }}
+          />
+          <SelectInput
+            id='kategori'
+            label='Kategori'
+            placeholder='Pilih Kategori'
+            validation={{
+              required: "Kategori tidak boleh kosong",
+            }}
+          >
+            <option value=''>Pilih Kategori</option>
+
+            {dataKategoriPengeluaran?.map(
+              (item: { nama_kategori: string }, index: number) => (
+                <option key={index} value={item.nama_kategori}>
+                  {item.nama_kategori}
+                </option>
+              )
+            )}
+          </SelectInput>
+        </Modal>
+        <Modal
+          onSubmit={onSubmit}
+          isOpen={isOpenTransfer}
+          type='transfer'
+          closeModal={closeModal}
+          title='Tambah Pengeluaran'
+        >
+          <SelectInput
+            id='nama_dompet'
+            label='Nama Dompet'
+            placeholder='Pilih Dompet'
+            validation={{
+              required: "Nama Dompet tidak boleh kosong",
+            }}
+          >
+            <option value=''>Pilih Dompet</option>
+            {dataDompet &&
+              user?.data.map((item: any, index: number) =>
+                item.user_id === user?.id && dataDompet.id !== item.id ? (
+                  <option key={index} value={item.nama_dompet}>
+                    {item.nama_dompet}
+                  </option>
+                ) : null
+              )}
+          </SelectInput>
+          <Input
+            id='nominal'
+            label='Nominal'
+            placeholder='Masukkan Jumlah Transfer'
+            validation={{
+              required: "Jumlah Transfer tidak boleh kosong",
+            }}
+          />
+          <Input
+            id='deskripsi'
+            label='Deskripsi'
+            placeholder='Masukkan Deskripsi'
+            validation={{
+              required: "Deskripsi tidak boleh kosong",
+            }}
+          />
+          <Input
+            id='kategori'
+            label='Kategori'
+            placeholder='Masukkan Kategori'
+            validation={{
+              required: "Kategori tidak boleh kosong",
+            }}
+          />
+        </Modal>
         {/* create sidebar with aside */}
-        <aside className='w-1/5 h-screen bg-gray-800'>
+        <aside className='w-[18%] h-screen bg-gray-800'>
           <div className='flex flex-col items-center justify-center h-32'>
             <h1 className='text-white text-2xl font-bold'>Catatan Keuangan</h1>
-            <p className='text-xl text-white'>{user?.name}</p>
-            <h1 className='text-xl font-bold text-white'>
-              {/* format balance to rupiah */}
-              {new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR",
-              }).format(dataDompet?.saldo)}
-            </h1>
+            <p className='text-xl text-white mt-4'>Hello, {user?.name}</p>
           </div>
           <div className='flex flex-col items-center justify-center gap-4 h-full'>
-            {user?.id === dataDompet?.user_id && (
-              <button
-                onClick={() => {
-                  openModal("kolab");
-                }}
-              >
-                Add Kolaborator
-              </button>
-            )}
-
-            <button
-              type='button'
-              onClick={() => openModal("pemasukan")}
-              className='rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
-            >
-              Tambah Pemasukan
-            </button>
-            <button
-              type='button'
-              onClick={() => openModal("pengeluaran")}
-              className='rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
-            >
-              Tambah Pengeluaran
-            </button>
-            <button
-              type='button'
-              onClick={() => openModal("transfer")}
-              className='rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'
-            >
-              Transfer
-            </button>
-
             <button
               type='button'
               onClick={() => {
@@ -325,159 +478,49 @@ const DetailDompet = () => {
           </div>
         </aside>
 
-        <section className='w-4/5 flex flex-col gap-12 h-screen overflow-auto pb-8'>
-          {/* add modal component with children */}
-          <Modal
-            onSubmit={onSubmit}
-            isOpen={isOpenKolab}
-            type='kolab'
-            closeModal={closeModal}
-            title='Tambah Kolaborator'
-          >
-            <Input
-              id='user_email'
-              label='Email'
-              placeholder='Masukkan Email'
-              validation={{
-                required: "Email tidak boleh kosong",
-              }}
-            />
-          </Modal>
-          <Modal
-            onSubmit={onSubmit}
-            isOpen={isOpenPemasukan}
-            type='pemasukan'
-            closeModal={closeModal}
-            title='Tambah Pemasukan'
-          >
-            <Input
-              id='deskripsi'
-              label='Deskripsi'
-              placeholder='Masukkan Deskripsi'
-              validation={{
-                required: "Deskripsi tidak boleh kosong",
-              }}
-            />
-            <Input
-              id='pemasukan'
-              label='Pemasukan'
-              placeholder='Masukkan Jumlah Pemasukan'
-              validation={{
-                required: "Jumlah Pemasukan tidak boleh kosong",
-              }}
-            />
-            <SelectInput
-              id='kategori'
-              label='Kategori'
-              placeholder='Pilih Kategori'
-              validation={{
-                required: "Kategori tidak boleh kosong",
-              }}
-            >
-              <option value=''>Pilih Kategori</option>
-              {dataKategoriPemasukan?.map(
-                (item: { nama_kategori: string }, index: number) => (
-                  <option key={index} value={item.nama_kategori}>
-                    {item.nama_kategori}
-                  </option>
-                )
-              )}
-            </SelectInput>
-          </Modal>
-          <Modal
-            onSubmit={onSubmit}
-            isOpen={isOpenPengeluaran}
-            type='pengeluaran'
-            closeModal={closeModal}
-            title='Tambah Pengeluaran'
-          >
-            <Input
-              id='deskripsi'
-              label='Deskripsi'
-              placeholder='Masukkan Deskripsi'
-              validation={{
-                required: "Deskripsi tidak boleh kosong",
-              }}
-            />
-            <Input
-              id='pengeluaran'
-              label='Pengeluaran'
-              placeholder='Masukkan Jumlah Pengeluaran'
-              validation={{
-                required: "Jumlah Pengeluaran tidak boleh kosong",
-              }}
-            />
-            <SelectInput
-              id='kategori'
-              label='Kategori'
-              placeholder='Pilih Kategori'
-              validation={{
-                required: "Kategori tidak boleh kosong",
-              }}
-            >
-              <option value=''>Pilih Kategori</option>
+        <section className='w-[82%] flex flex-col gap-12 h-screen overflow-auto pb-8 pt-12'>
+          <div className='w-11/12 mx-auto h-12 flex items-center justify-between'>
+            <div className='flex gap-3'>
+              <div
+                onClick={() => openModal("pemasukan")}
+                className='h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer'
+              >
+                <GiPayMoney className='text-2xl' />
+              </div>
 
-              {dataKategoriPengeluaran?.map(
-                (item: { nama_kategori: string }, index: number) => (
-                  <option key={index} value={item.nama_kategori}>
-                    {item.nama_kategori}
-                  </option>
-                )
-              )}
-            </SelectInput>
-          </Modal>
-          <Modal
-            onSubmit={onSubmit}
-            isOpen={isOpenTransfer}
-            type='transfer'
-            closeModal={closeModal}
-            title='Tambah Pengeluaran'
-          >
-            <SelectInput
-              id='nama_dompet'
-              label='Nama Dompet'
-              placeholder='Pilih Dompet'
-              validation={{
-                required: "Nama Dompet tidak boleh kosong",
-              }}
-            >
-              <option value=''>Pilih Dompet</option>
-              {user?.data.map((item: any, index: number) =>
-                item.user_id === user?.id && dataDompet.id !== item.id ? (
-                  <option key={index} value={item.nama_dompet}>
-                    {item.nama_dompet}
-                  </option>
-                ) : null
-              )}
-            </SelectInput>
-            <Input
-              id='nominal'
-              label='Nominal'
-              placeholder='Masukkan Jumlah Transfer'
-              validation={{
-                required: "Jumlah Transfer tidak boleh kosong",
-              }}
-            />
-            <Input
-              id='deskripsi'
-              label='Deskripsi'
-              placeholder='Masukkan Deskripsi'
-              validation={{
-                required: "Deskripsi tidak boleh kosong",
-              }}
-            />
-            <Input
-              id='kategori'
-              label='Kategori'
-              placeholder='Masukkan Kategori'
-              validation={{
-                required: "Kategori tidak boleh kosong",
-              }}
-            />
-          </Modal>
+              <div
+                onClick={() => openModal("pengeluaran")}
+                className='h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer'
+              >
+                <GiReceiveMoney className='text-2xl' />
+              </div>
+              <div
+                onClick={() => openModal("transfer")}
+                className='h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer'
+              >
+                <BiTransfer className='text-2xl' />
+              </div>
+            </div>
+            <h1 className=''>
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              }).format(dataDompet?.saldo)}
+            </h1>
+            <div className='flex gap-3'>
+              <div
+                onClick={() => openModal("kolab")}
+                className={`${
+                  user?.id === dataDompet?.user_id ? "block" : "hidden"
+                } h-12 w-12 border rounded-full flex items-center justify-center cursor-pointer`}
+              >
+                <HiUserAdd className='text-2xl' />
+              </div>
+            </div>
+          </div>
 
           <table
-            className='w-full text-left border-collapse'
+            className='w-11/12 mx-auto border text-left border-collapse'
             style={{ borderSpacing: 0 }}
           >
             <thead>
