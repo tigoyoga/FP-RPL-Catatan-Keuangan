@@ -44,7 +44,7 @@ export default function Input({
             ? "ring-1 focus:ring-red-500 focus:ring-2 ring-red-500 bg-red-100"
             : "focus:ring-primary"
         }
-        bg-[#1A1B22] py-6 rounded-2xl shadow appearance-none placeholder:text-white outline-none hover:border focus:ring-2 w-full p-1 pl-2 text-white`}
+        bg-[#34364c89] py-6 rounded-2xl shadow appearance-none placeholder:text-white outline-none hover:border focus:ring-2 w-full p-1 pl-2 text-white`}
           type={`${showPassword ? "text" : "password"}`}
           id={id}
           placeholder={placeholder}
@@ -56,9 +56,9 @@ export default function Input({
           className="absolute inset-y-0 right-0 mr-3 flex items-center rounded-lg p-1 focus:outline-none focus:ring focus:ring-primary/50"
         >
           {showPassword ? (
-            <RxEyeOpen className="cursor-pointer text-xl text-gray-500 hover:text-gray-600" />
+            <RxEyeOpen className="cursor-pointer text-xl text-white hover:text-[#8997ff]" />
           ) : (
-            <RxEyeClosed className="cursor-pointer text-xl text-gray-500 hover:text-gray-600" />
+            <RxEyeClosed className="cursor-pointer text-xl text-white hover:text-[#8997ff]" />
           )}
         </button>
       </div>

@@ -104,7 +104,7 @@ function Register() {
       </Head>
       <main
         className="bg-cover h-screen w-screen overflow-hidden"
-        style={{ backgroundImage: "url('/images/Register Page.png')" }}
+        style={{ backgroundImage: "url('/images/BG2.png')" }}
       >
         <Toaster />
         <div className="grid grid-cols-12 h-screen">
@@ -130,7 +130,7 @@ function Register() {
             </div>
           </div>
           <div className="col-span-12 md:col-span-5 flex justify-center items-center">
-            <div className="w-full bg-[#23242E] rounded-3xl p-6 py-20 m-10">
+            <div className="w-full bg-[#4b4e665b] rounded-3xl p-6 py-20 m-10 shadow-lg shadow-blue-500/30 backdrop-blur">
               <h1 className="text-5xl font-bold text-center text-white mb-11">
                 Register
               </h1>
@@ -184,7 +184,7 @@ function Register() {
               <div>
                 <p className="text-center mt-4 text-white">
                   Sudah punya akun?{" "}
-                  <Link href="/login" className="text-blue-500">
+                  <Link href="/login" className="text-[#4757cc] font-bold">
                     Login
                   </Link>
                 </p>
