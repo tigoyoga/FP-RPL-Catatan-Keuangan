@@ -33,7 +33,7 @@ const Modal = ({
   return (
     <div>
       <Transition appear show={isOpen} as={React.Fragment}>
-        <Dialog as='div' className='relative z-10' onClose={() => {}}>
+        <Dialog as='div' className='relative z-10 ' onClose={() => {}}>
           <Transition.Child
             as={React.Fragment}
             enter='ease-out duration-300'
